@@ -1,6 +1,6 @@
 # Nettverkskanner (`main.py`)
 
-Et raskt og asynkront nettverksskanningsverktøy skrevet i Python som skanner etter åpne porter på en gitt IP-adresse eller nettadresse. Verktøyet prøver også å fange "bannere" fra åpne porter for å gi mer informasjon om tjenestene som kjører (spesielt for HTTP/HTTPS).
+Et raskt og asynkront nettverksskanningsverktøy skrevet i Python som skanner etter åpne porter på en gitt IP-adresse eller nettadresse. Verktøyet prøver også å fange "bannere" fra åpne porter for å gi mer informasjon om tjenestene som kjører
 
 ## Funksjoner
 
