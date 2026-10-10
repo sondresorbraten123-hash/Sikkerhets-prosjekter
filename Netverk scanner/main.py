@@ -1,5 +1,5 @@
 import socket
-import threading
+import concurrent.futures
 
 
 
@@ -40,13 +40,9 @@ def scan_nettverk(target, startP, sluttP):
     print("Skanner netverk...")
     trader = []
 
-    for p in range(startP, sluttP + 1):
-        t = threading.Thread(target= scan_port, args = (target, p))
-        trader.append(t)
-        t.start()
-    
-    for t in trader:
-        t.join()
+    with concurrent.futures.ThreadPoolExecutor(max_workers = 500) as executor:
+        for p in range(startP, sluttP + 1):
+            executor.submit(scan_port, target, p)
     
     apen = len(apne_porter)
     lukket = (sluttP - startP + 1) - apen
