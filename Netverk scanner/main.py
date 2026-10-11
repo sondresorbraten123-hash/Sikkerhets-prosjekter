@@ -58,12 +58,11 @@ def scan_nettverk(target, startP, sluttP):
 
 
 
-
+apne_porter = []
 target = input("Skriv inn en IP/nettadresse for testing: ")
 print("Skriv inn port du vil starte fra, til og med siste port du vil skanne")
 startP = int(input("Skriv inn start port: "))
 sluttP = int(input("Skriv inn siste port: "))
 
-apne_porter = []
 
 scan_nettverk(target, startP, sluttP)
