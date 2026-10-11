@@ -38,7 +38,6 @@ def scan_port(target, p):
 
 def scan_nettverk(target, startP, sluttP):
     print("Skanner netverk...")
-    trader = []
 
     with concurrent.futures.ThreadPoolExecutor(max_workers = 500) as executor:
         for p in range(startP, sluttP + 1):
