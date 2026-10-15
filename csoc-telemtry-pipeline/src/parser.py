@@ -63,7 +63,7 @@ def parse_log_linje(ra_log_linje: str) -> Optional[dict[str, str]]:
         "servernavn": data["servernavn"],
         "tjeneste": data["tjeneste"],
         "hendelses_type": hendelses_type,
-        "autentifiserings_metode": data["metode"],
+        "auth_metode": data["metode"],
         "brukernavn": data["brukernavn"],
         "fra_ip": data["fra_ip"],
         "hel_log_linje": linje,
