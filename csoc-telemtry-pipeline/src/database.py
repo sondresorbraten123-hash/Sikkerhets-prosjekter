@@ -81,7 +81,7 @@ class TelemetriDatabase:
 
     # Tar imot en liste med hendelser som parser.py opretter og setter det inn i db
     # Returnerer hvor mange endringer den har gjort
-    def sett_inn_nye_hendelser(self, hendelser: List[Dict[str, str]]) -> int:
+    def insert_hendelser(self, hendelser: List[Dict[str, str]]) -> int:
         markor = self.conn.cursor()
 
         antall_for_insert = self.conn.total_changes
