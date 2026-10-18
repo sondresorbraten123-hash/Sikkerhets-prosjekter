@@ -2,8 +2,8 @@
 
 Dette repoet inneholder forskjellige sikkerhetsrelaterte verktøy og skript jeg har laget.
 
-Prosjektene er laget med hjelp fra AI, men alt er skrevet manuelt for at jeg skal lære og forstå alle delene i prosjektene.
-Grunnen til at jeg har brukt AI er for å vite hvordan jeg går frem med å starte disse typen prosjekter, ikke for å generere selve prosjektene.
+Prosjektene er laget med noe hjelp fra AI for å finne ut av hvordan jeg starter prosjektene.
+Alt av kode er skrevet manuelt, og jeg har har kommentert alt mens jeg utviklet det for å vise forståelse og læring gjennom utviklingen.
 
 ## 1. [Phishing Triage](./Phishing%20Triage/)
 
