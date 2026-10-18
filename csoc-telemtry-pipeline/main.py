@@ -14,7 +14,7 @@ from tests.log_generator import generer_eksempel_logger
 logging.basicConfig(
     level = logging.INFO,
     format = "%(asctime)s [%(levelname)s] %(message)s",
-    datefmt = "%Y-m%-d% %H:%M:%S",
+    datefmt = "%Y-%m-%d %H:%M:%S",
 )
 
 # Hovedfunksjon for bruk av prosjektet med kjøring direkte i terminalen med argparse
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--db",
-        default = "data/csoc_telemtri.db",
+        default = "data/csoc_telemetri.db",
         help = "Sti til SQLite database",
     )
     parser.add_argument(

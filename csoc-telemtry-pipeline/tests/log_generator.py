@@ -63,7 +63,7 @@ def generer_eksempel_logger(filepath: str = "data/auth_sample.log") -> None:
     pid += 1
     linjer_til_log.append(
         f"{hendelse_tid_suksess} nb_srv-01 sshd[{pid}]: Akseptert passord for {angrepet_bruker} "
-        f"fra {angrep_ip} port 51009S ssh2"
+        f"fra {angrep_ip} port 51009 ssh2"
     )
 
     # Passord spray angrep som spytter ut 95 feilede innloggingsforsøk, mange hendelser på kort tid skal bli fanget opp
