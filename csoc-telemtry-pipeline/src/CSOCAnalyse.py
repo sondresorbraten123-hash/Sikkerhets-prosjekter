@@ -1,6 +1,6 @@
 import math
 from src.database import TelemetriDatabase
-from src.trusselInfo import TrusselInfo
+from src.TrusselInfo import TrusselInfo
 
 # Klasse for algoritmer og deteksjon til å se etter angrep i CSOC logg
 class CSOCAnalyse:
