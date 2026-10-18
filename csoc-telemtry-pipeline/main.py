@@ -83,6 +83,6 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    kjor_pipeline(args.logfil, args.db, args.demo)
+    kjor_pipeline(args.loggfil, args.db, args.demo)
 
 
