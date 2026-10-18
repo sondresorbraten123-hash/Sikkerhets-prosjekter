@@ -13,7 +13,7 @@ class TelemetriDatabase:
         self.conn = sqlite3.connect(self.db_sti)
 
         # Brukes for å kunne hente data på en enkel måte, likt som ved dictionaries
-        self.conn.rader = sqlite3.Row
+        self.conn.row_factory = sqlite3.Row
 
         # Opretter alle tabeller og indekser som trengs for at db fungerer
         self.oprett_essensielle_db_deler()
@@ -42,7 +42,7 @@ class TelemetriDatabase:
         # Opretter tabell for IP adresser som er sjekket opp fra før
         # for å slippe å bruke API oppslag hvis IPen har blitt sjekket før
         markor.execute("""
-            CREATE TABLE IF NOT EXISTS tidligere_sjekket_ip_adresse(
+            CREATE TABLE IF NOT EXISTS tidligere_sjekket_ip_addresse(
                 ip TEXT PRIMARY KEY,
                 land TEXT,
                 isp TEXT,
@@ -108,7 +108,7 @@ class TelemetriDatabase:
 
         # setter inn parameterene i alarm
         markor.execute("""
-            INSERT OR IGNORE alarm(
+            INSERT OR IGNORE INTO alarm(
                 regel_navn, alvorlighetsgrad, fra_ip, angrepet_bruker, beskrivelse, kontekst
             ) VALUES(?, ?, ?, ?, ?, ?)
         """, (regel_navn, alvorlighetsgrad, fra_ip, angrepet_bruker, beskrivelse, kontekst))

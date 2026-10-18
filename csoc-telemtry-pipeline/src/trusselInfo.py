@@ -53,7 +53,7 @@ class TrusselInfo:
                     """, (ip, land, isp, org))
                     self.conn.commit()
 
-                    return f"Land: {land} | ISP: {land} | Org: {org}"
+                    return f"Land: {land} | ISP: {isp} | Org: {org}"
 
         except Exception:
             return f"Kan ikke hente info ({type(Exception).__name__})"

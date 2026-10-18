@@ -21,9 +21,9 @@ class CSOCAnalyse:
         # hvor mange tidligere feil
         # Så sjekker den om tiden og feilene er innenfor rammen jeg satte opp tidligere
         sporring = """
-            SELECT fra_ip, brukernavn, susksess_tid, feil
+            SELECT fra_ip, brukernavn, suksess_tid, feil
             FROM (
-                SELECT h.fra_ip, h.brukernavn. h.tidsstempel AS suksess_tid,
+                SELECT h.fra_ip, h.brukernavn, h.tidsstempel AS suksess_tid,
                 (
                     SELECT COUNT(*)
                     FROM hendelse he
@@ -39,7 +39,7 @@ class CSOCAnalyse:
             WHERE feil >= ?
         """
 
-        markor.execute(sporring, (min_feilede_forsok, tidsramme_minutter))
+        markor.execute(sporring, (tidsramme_minutter, min_feilede_forsok))
         sql_bf_data = markor.fetchall()
 
         # Ser om det er noen nye alarmer og henter info til IP og legger inn i db
@@ -48,7 +48,7 @@ class CSOCAnalyse:
             ip = r["fra_ip"]
             bruker = r["brukernavn"]
             antall_feilede_forsok = r["feil"]
-            suksess_tidsstempel = r["suskess_tid"]
+            suksess_tidsstempel = r["suksess_tid"]
 
             # Henter info til IPen før den lagres i db
             kontekst_insert = self.info_henter.ip_info(ip)
@@ -110,9 +110,9 @@ class CSOCAnalyse:
         # Hvis z-score er mer enn 2.5 betyr det at standardavviket denne timen er 2.5 over normalen
         # Dette har mindre enn 1% sannsynlighet for å skje helt tilfeldig
         nye_alarmer = 0
-        for time in timer:
-            observasjoner = timer["antall_hendelser"]
-            time_nr = timer["time_teller"]
+        for rad in timer:
+            observasjoner = rad["antall_hendelser"]
+            time_nr = rad["time_teller"]
             z_score = (observasjoner - gjennomsnitt) / standardavvik
 
             # Hvis z_score er over 2.5 (terskel satt i funksjon deklarasjonen)
@@ -123,7 +123,7 @@ class CSOCAnalyse:
                     FROM hendelse
                     WHERE strftime('%Y-%m-%d %H:00', tidsstempel) = ?
                     GROUP BY fra_ip
-                    ORDER BY ip_teller
+                    ORDER BY ip_teller DESC
                     LIMIT 1
                 """, (time_nr,))
                 ansvarlig_ip_rad = markor.fetchone()
@@ -134,8 +134,8 @@ class CSOCAnalyse:
                 # og lager en beskrivelse av avviket
                 ansvarlig_ip_info = self.info_henter.ip_info(ansvarlig_ip)
                 beskrivelse_insert = (
-                    f"Avvikende log antall i timen [{time_nr}]: {observasjoner} hendelser"
-                    f"(Basislinje: gjennomsnitt = {gjennomsnitt:.1f}, standardavvik = {standardavvik:.1f}, z_score = {z_score:.2f})"
+                    f"Avvikende log antall i timen [{time_nr}]: {observasjoner} hendelser "
+                    f"(Basislinje: gjennomsnitt = {gjennomsnitt:.1f}, standardavvik = {standardavvik:.1f}, z_score = {z_score:.2f}) "
                     f"IP ansvarlig for mesteparten: {ansvarlig_ip} med ({ansvarlig_ip_antall}) hendelser"
                 )
                 
@@ -149,5 +149,5 @@ class CSOCAnalyse:
                     kontekst = ansvarlig_ip_info
                 ):
                     nye_alarmer += 1
-
+        markor.close()
         return nye_alarmer

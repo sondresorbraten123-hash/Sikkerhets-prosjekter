@@ -18,9 +18,9 @@ log_monster = re.compile(
     # Gruppe for status, (Feilet/akseptert) og gruppe for metode (publickey/passord eller andre mulige måter) 
     r"(?P<status>Akseptert|Feilet)\s+(?P<metode>\S+)\s+for\s+"
 
-    # For å spise opp ukjent bruker om dette står i logg linjen
+    # For å spise opp ordene ukjent og bruker om dette står i logg linjen
     # Denne blir ikke brukt til noe, den er bare for å forsikre lesing av bruker i neste gruppe
-    r"(?:ukjent bruker\s)?"
+    r"(?:(?:ukjent\s+)?bruker\s+)?"
 
     # Gruppe for brukernavnet og hopper over ordet fra
     r"(?P<brukernavn>[\w\-]+)\s+fra\s+"
