@@ -51,12 +51,103 @@ class CSOCAnalyse:
             suksess_tidsstempel = r["suskess_tid"]
 
             # Henter info til IPen før den lagres i db
-            kontekst = self.info_henter.ip_info(ip)
-            beskrivelse = (
+            kontekst_insert = self.info_henter.ip_info(ip)
+            beskrivelse_insert = (
                 f"Bruker '{bruker}' logget inn {suksess_tidsstempel} etter "
                 f"{antall_feilede_forsok} feilede forsøk innen {tidsramme_minutter} minutter"
             )
 
             # Lagrer alarmen i db
-            
+            if self.db.insert_alarm(
+                regel_navn = "Brute Force etterfulgt av suksessfull innlogging",
+                alvorlighetsgrad = "KRITISK",
+                fra_ip = ip,
+                angrepet_bruker = bruker,
+                beskrivelse = beskrivelse_insert,
+                kontekst = kontekst_insert
+            ):
+                nye_alarmer += 1
+        
+        markor.close()
+        return nye_alarmer
 
+    # Z-score analyse for å oppdage statistiske anomalier ved hjelp av z-score/standardavvik
+    # Fanger opp foreks passord spray
+    def z_score_analyse(self, z_terskel: float = 2.5) -> int:
+        # Åpner og kobler til db for å hente data
+        markor = self.db.conn.cursor()
+        markor.execute("""
+            SELECT strftime('%Y-%m-%d %H:00', tidsstempel) AS time_teller, COUNT(*) AS antall_hendelser
+            FROM hendelse
+            GROUP BY time_teller
+            ORDER BY time_teller ASC
+        """)
+        # Henter hendelser gruppert på timer
+        timer = markor.fetchall()
+
+        # Det trengs minst 4 timer med data for at analysen skal gi mening
+        # Eller så blir det ikke nok data for at analysen skal fange opp avvik
+        if len(timer) < 4:
+            return 0
+
+        # Lager en listevariabel med antall hendelser for hver time
+        hendelser_per_time = [hendelse["antall_hendelser"] for hendelse in timer]
+
+        # Regner ut gjennomsnittet av hendelser i timen
+        gjennomsnitt = sum(hendelser_per_time) / len(hendelser_per_time)
+
+        # Regner ut variansen av hendelser per time, altså forskjellen i hendelser hver time
+        varians = sum((x - gjennomsnitt) ** 2 for x in hendelser_per_time) / len(hendelser_per_time)
+
+        # regner ut standardavviket, for å se hvor mye antall hendelser svinger opp og ned hver time
+        standardavvik = math.sqrt(varians)
+
+        # Hvis alle timer har nøyaktig det samme antallet hendelser
+        if standardavvik == 0:
+            return 0
+
+        # Regenr ut selve z-scoren for hver time, formelen for z-score er: Z = (observasjon - gjennomsnitt) / standardavvik
+        # Hvis z-score er mer enn 2.5 betyr det at standardavviket denne timen er 2.5 over normalen
+        # Dette har mindre enn 1% sannsynlighet for å skje helt tilfeldig
+        nye_alarmer = 0
+        for time in timer:
+            observasjoner = timer["antall_hendelser"]
+            time_nr = timer["time_teller"]
+            z_score = (observasjoner - gjennomsnitt) / standardavvik
+
+            # Hvis z_score er over 2.5 (terskel satt i funksjon deklarasjonen)
+            # Sjekker vi hvilken IP som var ansvarlig for mesteparten av loggene denne timen via db
+            if z_score >= z_terskel:
+                markor.execute("""
+                    SELECT fra_ip, COUNT(*) AS ip_teller
+                    FROM hendelse
+                    WHERE strftime('%Y-%m-%d %H:00', tidsstempel) = ?
+                    GROUP BY fra_ip
+                    ORDER BY ip_teller
+                    LIMIT 1
+                """, (time_nr,))
+                ansvarlig_ip_rad = markor.fetchone()
+                ansvarlig_ip = ansvarlig_ip_rad["fra_ip"] if ansvarlig_ip_rad else "Ukjent"
+                ansvarlig_ip_antall = ansvarlig_ip_rad["ip_teller"] if ansvarlig_ip_rad else 0
+
+                # henter mer info på den IPen som er ansvarlig for mest logger denne avvikstimen
+                # og lager en beskrivelse av avviket
+                ansvarlig_ip_info = self.info_henter.ip_info(ansvarlig_ip)
+                beskrivelse_insert = (
+                    f"Avvikende log antall i timen [{time_nr}]: {observasjoner} hendelser"
+                    f"(Basislinje: gjennomsnitt = {gjennomsnitt:.1f}, standardavvik = {standardavvik:.1f}, z_score = {z_score:.2f})"
+                    f"IP ansvarlig for mesteparten: {ansvarlig_ip} med ({ansvarlig_ip_antall}) hendelser"
+                )
+                
+                # Legger alarmen inn i db
+                if self.db.insert_alarm(
+                    regel_navn = "Statistisk avvik av antall logger på en time (z-score)",
+                    alvorlighetsgrad = "HØY",
+                    fra_ip = ansvarlig_ip,
+                    angrepet_bruker = "FLERE",
+                    beskrivelse = beskrivelse_insert,
+                    kontekst = ansvarlig_ip_info
+                ):
+                    nye_alarmer += 1
+
+        return nye_alarmer
