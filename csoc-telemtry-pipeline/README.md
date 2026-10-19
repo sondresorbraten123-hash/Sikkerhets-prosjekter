@@ -9,7 +9,6 @@ I et Security Operations Center (SOC) genereres det enorme mengder ustrukturerte
 Dette prosjektet simulerer en mini-SIEM datapipeline som leser rå autentiserings- og systemlogger, trekker ut sikkerhetshendelser ved hjelp av Regex, og lagrer dem i en lokal SQLite-database for videre analyse.
 
 > **Obs** Prosjektet er også utviklet og testet på linux ved bruk av bash/fish kommandolinje, det er ikke testet på andre operativsystemer.
-> **Obs** Verktøyet er laget som en demo for å forstå konseptet og teknologien bak denne typen utvikling, ikke for bruk med andre logger. Hvis loggene du har tenkt å bruke ikke er satt sammen på akkurat samme måte som loggene som blir generert, kommer ikke dette programmet til å fungere korrekt. Dette er bare et prosjekt ment for læring og forståelse.
 
 ## Nøkkelfunksjonalitet
 
@@ -25,6 +24,8 @@ Dette prosjektet simulerer en mini-SIEM datapipeline som leser rå autentisering
 * **Database:** SQLite 3
 
 ## Hvordan kjøre prosjektet
+
+> **Obs** Dette prosjektet ble opprettet med en spesifikk loggstruktur. Hvis ikke loggene du har tenkt å testefølger nøyaktig samme struktur som testloggene kommer ikke regex til å fange opp riktige data. Regex mønsteret kan tilpasses din egen loggstruktur, men dette må gjøres selv.
 
 1. Klon repositoriet og naviger til mappen:
 
