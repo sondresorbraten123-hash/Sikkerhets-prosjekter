@@ -1,9 +1,7 @@
 # Sikkerhetsprosjekter
 
-Dette repoet inneholder forskjellige sikkerhetsrelaterte verktøy og skript jeg har laget.
-
-Prosjektene er laget med noe hjelp fra AI for å finne ut av hvordan jeg starter prosjektene.
-Alt av kode er skrevet manuelt, og jeg har har kommentert alt mens jeg utviklet det for å vise forståelse og læring gjennom utviklingen.
+Velkommen til Github porteføljen min, hvor jeg viser frem noen av sikkerhetsverktøyene jeg har utviklet.
+Formålet med dette repoet er å kombinere teoretisk forståelse for konsepter med faktiske utviklingsteknologier som jeg har lært. Samtidig hjelper dette meg å forstå konseptene på en dypere måte ved å utvikle ekte løsninger.
 
 ## 1. [Phishing Triage](./Phishing%20Triage/)
 
