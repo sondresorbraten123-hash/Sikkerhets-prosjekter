@@ -25,7 +25,7 @@ Dette prosjektet simulerer en mini-SIEM datapipeline som leser rå autentisering
 
 ## Hvordan kjøre prosjektet
 
-> **Obs** Dette prosjektet ble opprettet med en spesifikk loggstruktur. Hvis ikke loggene du har tenkt å testefølger nøyaktig samme struktur som testloggene kommer ikke regex til å fange opp riktige data. Regex mønsteret kan tilpasses din egen loggstruktur, men dette må gjøres selv.
+> **Obs** Dette prosjektet ble opprettet med en spesifikk loggstruktur. Hvis ikke loggene du har tenkt å teste følger nøyaktig samme struktur som testloggene kommer ikke regex til å fange opp riktige data. Regex mønsteret kan tilpasses din egen loggstruktur, men dette må gjøres selv.
 
 1. Klon repositoriet og naviger til mappen:
 
