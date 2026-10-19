@@ -13,6 +13,6 @@ Et verktøy for å gjøre en rask førstehåndsvurdering av potensielt skadelige
 
 Et raskt, multi-trådet nettverksskanningsverktøy i Python som skanner porter og forsøker å fange bannere fra tjenestene som kjører.
 
-## 3. [CSOC Telemetry Pipeline](./csoc-telemetry-pipeline/)
+## 3. [CSOC Telemetry Pipeline](./csoc-telemtry-pipeline/)
 
 Et prosjekt for skanning av ssh logger, med demo modus for testing av programmet. Programmet sjekker loggene for Brute Force angrep og statistiske avvik via z-score algoritme.
