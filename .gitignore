@@ -1,0 +1,25 @@
+Prosjektdata (genererte logger og SQLite-databaser)
+
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+Python midlertidige filer og cache
+
+pycache/
+*.py[cod]
+*$py.class
+
+Virtuelle miljøer
+
+.venv/
+venv/
+env/
+
+Editor- og OS-filer
+
+.vscode/
+.idea/
+.DS_Store
