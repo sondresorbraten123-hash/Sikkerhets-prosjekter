@@ -16,3 +16,4 @@ brannmur_monster = re.compile(
     # Fanger opp bytes sendt
     r"bytes=(?P<bytes>\d+)"
 )
+
