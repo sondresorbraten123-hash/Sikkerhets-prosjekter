@@ -6,6 +6,7 @@ from src.database import CTIDatabase
 # Denne filen er for å generere brannmurtraffikk for testing til systemet via --demo
 # Det blir generert traffikk med traffikk fra ekte c2 alarmer som laget tidligere
 # Loggene er generert i likhet med NetFlow logger for at programmet skal kunne brukes sammen med ekte logger
+# Men det funker fortsatt bare med tcp og allow uten redigering av regex
 def generer_brannmur_trafikk(db: CTIDatabase, filsti: str = "data/brannmur_trafikk.log") -> None:
     # Sjekker at sti og filmapper eksisterer og blir laget om de ikke er der
     Path(filsti).parent.mkdir(parents = True, exist_ok = True)
