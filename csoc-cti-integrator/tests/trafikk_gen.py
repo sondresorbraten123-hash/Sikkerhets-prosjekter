@@ -12,7 +12,7 @@ def generer_brannmur_trafikk(db: CTIDatabase, filsti: str = "data/brannmur_trafi
     Path(filsti).parent.mkdir(parents = True, exist_ok = True)
 
     # starttid for loggene og kjente IP addresser
-    start_tid = datetime.now().replace(microsecond = 0) - timedelta(hours = 2)
+    start_tid = datetime.now().replace(minute = 0, second = 0, microsecond = 0) - timedelta(hours = 2)
     interne_klienter = ["10.0.20.14", "10.0.20.25", "10.0.20.88", "10.0.50.10"]
     kjente_eksterne_iper = ["142.250.74.110", "29.190.151.68", "151.101.1.69", "1.1.1.1"]
     linjer = []
