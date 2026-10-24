@@ -18,7 +18,7 @@ def generer_brannmur_trafikk(db: CTIDatabase, filsti: str = "data/brannmur_trafi
 
     # Genererer vanlig trafikk
     for i in range(150):
-        tid = (start_tid + timedelta(seconds = 1 * 40)).strftime("%Y-%m-%dT%H:%M:%S")
+        tid = (start_tid + timedelta(seconds = i * 40)).strftime("%Y-%m-%dT%H:%M:%S")
         intern_ip = random.choice(interne_klienter)
         ekstern_ip = random.choice(kjente_eksterne_iper)
         port = 53 if ekstern_ip == "1.1.1.1" else 443
