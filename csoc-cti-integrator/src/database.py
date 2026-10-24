@@ -47,7 +47,7 @@ class CTIDatabase:
                 kilde_navn TEXT NOT NULL,
                 status_kode INTEGER NOT NULL,
                 responstid_ms FLOAT NOT NULL,
-                antall_indikatorer INTEGER NOT NULL,
+                antall_hentet INTEGER NOT NULL,
                 melding TEXT NOT NULL
             )
         """)
@@ -116,9 +116,7 @@ class CTIDatabase:
         markor.executemany("""
             INSERT INTO ioc(
                 ip, port, type_skadevare, status, sist_sett, kilde_feed
-            ) VALUES(
-                :ip, :port, :type_skadevare, :status, :sist_sett, :kilde_feed
-            )
+                ) VALUES(:ip, :port, :type_skadevare, :status, :sist_sett, :kilde_feed)
             ON CONFLICT(ip) DO UPDATE SET
                 status = excluded.status,
                 sist_sett = excluded.sist_sett,
@@ -135,8 +133,8 @@ class CTIDatabase:
         markor = self.conn.cursor()
         markor.execute("""
             INSERT INTO api_helse(
-                kilde_navn, status_kode, responstid_ms, antall_indikatorer, melding
-            ) VALUES(:kilde_navn, :status_kode, :responstid_ms, :antall_indikatorer, :melding)
+                kilde_navn, status_kode, responstid_ms, antall_hentet, melding
+            ) VALUES(:kilde_navn, :status_kode, :responstid_ms, :antall_hentet, :melding)
         """, api_helse_data)
         self.conn.commit()
         markor.close()
