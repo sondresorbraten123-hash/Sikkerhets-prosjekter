@@ -48,7 +48,7 @@ class CTIDatabase:
                 status_kode INTEGER NOT NULL,
                 responstid_ms FLOAT NOT NULL,
                 antall_indikatorer INTEGER NOT NULL,
-                medling TEXT NOT NULL
+                melding TEXT NOT NULL
             )
         """)
 
@@ -108,7 +108,7 @@ class CTIDatabase:
 
 
     # Funksjon for å oppdatere db med IOC informasjon fra trussel feeder
-    def insert_ioc_liste(self, ioc_liste: List[Dict[str: Any]]) -> int:
+    def insert_ioc_liste(self, ioc_info_liste: List[Dict[str, Any]]) -> int:
         markor = self.conn.cursor()
         antall_for = self.conn.total_changes
 
@@ -123,7 +123,7 @@ class CTIDatabase:
                 status = excluded.status,
                 sist_sett = excluded.sist_sett,
                 tid_oppdatert_lokalt = CURRENT_TIMESTAMP
-        """, ioc_liste)
+        """, ioc_info_liste)
 
         self.conn.commit()
         markor.close()
@@ -131,11 +131,67 @@ class CTIDatabase:
         return self.conn.total_changes - antall_for
 
     # Legger inn helsestatusen for api integrasjoner
-    def logg_api_helse(
-        self, kilde_navn: str, status_kode: int, responstid_ms: float, antall: int, medling: str) -> None:
-
+    def insert_api_helse(self, api_helse_data: Dict[str, Any]) -> None:
         markor = self.conn.cursor()
-
         markor.execute("""
-        
-        """)
+            INSERT INTO api_helse(
+                kilde_navn, status_kode, responstid_ms, antall_indikatorer, melding
+            ) VALUES(:kilde_navn, :status_kode, :responstid_ms, :antall_indikatorer, :melding)
+        """, api_helse_data)
+        self.conn.commit()
+        markor.close()
+
+    # Henter alle IOC i en dictionary for enkel bruk
+    # bruker IP addresse som nøkkel for lettest mulig oppslag
+    def get_ioc_dict(self) -> Dict[str, Dict[str, Any]]:
+        markor = self.conn.cursor()
+        markor.execute("SELECT * FROM ioc")
+        markor_resultat = {rad["ip"]: dict(rad) for rad in markor.fetchall()}
+        markor.close()
+        return markor_resultat
+
+    # Henter hvitelisten som et SET pga det skal bare sjekkes om en IP er der eller ikke
+    def get_hviteliste(self) -> Set[str]:
+        markor = self.conn.cursor()
+        markor.execute("SELECT ip FROM hviteliste")
+        markor_resultat = {rad["ip"] for rad in markor.fetchall()}
+        markor.close()
+        return markor_resultat
+
+    # Legger inn en c2 alarm, hvis hendelsen ikke er varslet fra før
+    def insert_c2(self, c2_data: Dict[str, Any]) -> bool:
+        markor = self.conn.cursor()
+        antall_for = self.conn.total_changes
+        markor.execute("""
+            INSERT OR IGNORE INTO c2_alarm(
+                tidsstempel, intern_ip, ekstern_ip, ekstern_port, type_skadevare, bytes_sendt,
+                risiko_score, alvorlighetsgrad, beskrivelse
+            ) VALUES(
+                :tidsstempel, :intern_ip, :ekstern_ip, :ekstern_port, :type_skadevare, :bytes_sendt,
+                :risiko_score, :alvorlighetsgrad, :beskrivelse
+            )
+        """, c2_data)
+
+        self.conn.commit()
+        markor.close()
+        return (self.conn.total_changes - antall_for) > 0
+
+    # Henter siste dataen på api helse
+    def get_siste_api_helsedata(self) -> Dict[str, Any]:
+        markor = self.conn.cursor()
+        markor.execute("SELECT * FROM api_helse ORDER BY id DESC LIMIT 1")
+        rad = markor.fetchone()
+        markor.close()
+        return dict(rad) if rad else {}
+
+    # Hent liste med alle c2 alarmer med høyest risiko_score først
+    def get_c2(self) -> List[Dict[str, Any]]:
+        markor = self.conn.cursor()
+        markor.execute("SELECT * FROM c2_alarm ORDER BY risiko_score DESC, id DESC")
+        rader = [dict(rad) for rad in markor.fetchall()]
+        markor.close()
+        return rader
+
+    # Lukk selve database tilkoblingen
+    def lukk(self) -> None:
+        self.conn.close()
