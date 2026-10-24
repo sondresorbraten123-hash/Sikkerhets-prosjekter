@@ -28,7 +28,7 @@ class TrusselInfoHenter:
             with urllib.request.urlopen(foresporsel, timeout = 5.0) as respons:
                 status_kode = respons.getcode()
                 ra_data = respons.read().decode("utf-8")
-                responstid_ms = (time.perf_counter() - start_tid) * 1000
+                responstid_ms = round((time.perf_counter() - start_tid) * 1000, 2)
 
                 json_data = json.loads(ra_data)
                 ioc_liste = []
@@ -74,7 +74,7 @@ class TrusselInfoHenter:
 
         # I tilfelle tilkoblingsfeil
         except Exception:
-            responstid_ms = (time.perf_counter() - start_tid) * 1000
+            responstid_ms = round((time.perf_counter() - start_tid) * 1000, 2)
             antall_hentet = 0
 
             api_helse_data = {
