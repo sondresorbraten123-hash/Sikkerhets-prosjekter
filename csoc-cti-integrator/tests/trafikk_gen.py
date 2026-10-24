@@ -35,12 +35,12 @@ def generer_brannmur_trafikk(db: CTIDatabase, filsti: str = "data/brannmur_trafi
     if len(alle_ioc) >= 1:
         ioc_1 = alle_ioc[0]
         tid_1 = (start_tid + timedelta(minutes = 35)).strftime("%Y-%m-%dT%H:%M:%S")
-        linjer.append(f"{tid_1} ALLOW TCP 10.0.20.88 -> {ioc_1['ip']}:{ioc_1['port']} bytes =1850000")
+        linjer.append(f"{tid_1} ALLOW TCP 10.0.20.88 -> {ioc_1['ip']}:{ioc_1['port']} bytes=1850000")
     
     if len(alle_ioc) >= 2:
         ioc_2 = alle_ioc[1]
         tid_2 = (start_tid + timedelta(minutes = 75)).strftime("%Y-%m-%dT%H:%M:%S")
-        linjer.append(f"{tid_2} ALLOW TCP 10.0.20.14 -> {ioc_2['ip']}:{ioc_2['port']} bytes =1240")
+        linjer.append(f"{tid_2} ALLOW TCP 10.0.20.14 -> {ioc_2['ip']}:{ioc_2['port']} bytes=1240")
 
     # Sorterer loggen så tidene er i riktig rekkefølge og skriver til logfil
     linjer.sort()
